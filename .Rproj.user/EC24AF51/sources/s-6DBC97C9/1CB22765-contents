@@ -1,0 +1,58 @@
+---
+title: "STA9690 - Midterm"
+author: "Christopher Lang"
+date: "November 2, 2017"
+header-includes:
+   - \usepackage{amsfonts}
+output: pdf_document
+---
+
+## Question 1
+
+### Part A
+
+> Prove that $E[y]=X\beta{}^*$ and $Cov[y]=\sigma^2I$
+
+**We know the following:**
+
+* $E[\epsilon{}]=0$
+* $Cov[\epsilon{}]=\sigma^2I$
+
+Using the distributive property of the **expectation operator** we define the following:
+$$y=X\beta^*+\epsilon$$
+$$E[y]=E[X\beta^*]+E[\epsilon]$$
+$$E[y]=E[X\beta^*]+0$$
+$$E[y]=E[X\beta^*]$$
+
+$X$ is a fixed quantity, while $\beta^*$ is a known quantity **that does not vary** (though we don't know what the value is, we know it is a population parameter). If so, they are both constant values (constant matrix, constant vector, respectively), and by the expectation property of $E[a]=a$ we have the following:
+
+$$E[y]=X\beta^*$$
+
+Similarly, to find $Cov[y]$ we note that the covariance of a single random variable is the same as the variance of that random variable by the property of covariance:
+$$Cov[Y]=\sigma^{2}_{Y}$$
+Since we are only looking at a single random variable $y$, the **covariance operator** is equivalent to the **variance operator**. Therefore, all of the variance operator is applicable:
+
+$$Cov[Y]=Cov[X\beta^*+\epsilon]$$
+Since both $X$ and $\beta^*$ are constants, they are dropped by the variance operator:
+
+$$Cov[Y]=Cov[\epsilon]$$
+And by the known defintion of $Cov[\epsilon{}]=\sigma^2I$
+$$Cov[Y]=\sigma^2I$$
+
+\newpage
+
+### Part B
+
+**We know the following:**
+
+* $v\in\mathbb{R}^p$ is a vector such that $Xv=0$
+* $X\in\mathbb{R}^{n\times p}$ is a $n\times p$ real matrix of predictor variables
+
+If $Xv=0$ is true than the vector $v=0$ is guaranteed to be a solution out of many possible solutions
+
+If so, then $\hat{\beta}+c.v$ is also a minimizer for any $c\in\mathbb{R}$ as:
+
+$\hat{\beta}+c.v=\hat{\beta}$ if $v=0$ for **any** $c\in\mathbb{R}$
+
+### Part C
+If the matrix $X$ has completely linear independent columns, than the matrix is full column rank and has a unique solution for $Xv=0$, and the solution for $v$ is $v=0$
