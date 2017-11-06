@@ -36,7 +36,7 @@ $$Cov[Y]=Cov[X\beta^*+\epsilon]$$
 Since both $X$ and $\beta^*$ are constants, they are dropped by the variance operator:
 
 $$Cov[Y]=Cov[\epsilon]$$
-And by the known defintion of $Cov[\epsilon{}]=\sigma^2I$
+And by the known definition of $Cov[\epsilon{}]=\sigma^2I$
 $$Cov[Y]=\sigma^2I$$
 
 \newpage
@@ -48,11 +48,40 @@ $$Cov[Y]=\sigma^2I$$
 * $v\in\mathbb{R}^p$ is a vector such that $Xv=0$
 * $X\in\mathbb{R}^{n\times p}$ is a $n\times p$ real matrix of predictor variables
 
-If $Xv=0$ is true than the vector $v=0$ is guaranteed to be a solution out of many possible solutions
+Let the minimizer of $\hat{\beta}+c\cdot{}v$ be a solution to the least squares problem. Then:
 
-If so, then $\hat{\beta}+c.v$ is also a minimizer for any $c\in\mathbb{R}$ as:
-
-$\hat{\beta}+c.v=\hat{\beta}$ if $v=0$ for **any** $c\in\mathbb{R}$
+$$y-X\beta=y-X(\hat{\beta}+c\cdot{}v)=y-X\hat{\beta}-Xc\cdot{}v=y-X\hat{\beta}-c\cdot{}Xv$$
+Since we know that $Xv=0$ then we know that:
+$$y-X\hat{\beta}-c\cdot{}Xv=y-X\hat{\beta}-c\cdot{}0$$
+So regardless of the value of $c$, the term $c\cdot{}0=0$. So:
+$$y-X\hat{\beta}-c\cdot{}Xv=y-X\hat{\beta}$$
+Hence:
+$$(\hat{\beta}+c\cdot{}v)=argmin_{\beta}||y-X\beta||^2_2$$
+In summary, the minimizer $\hat{\beta}+c\cdot{}v$ is equivalent to the minimizer $\hat{beta}$ if $Xv=0$
 
 ### Part C
-If the matrix $X$ has completely linear independent columns, than the matrix is full column rank and has a unique solution for $Xv=0$, and the solution for $v$ is $v=0$
+If the matrix $X$ has completely linear independent columns, than the matrix is full column rank and has a unique solution for $v$. That solution is $v=0$
+
+### Part D
+If $p>n$ then the matrix $Xv=0$ is an underdetermined homogeneous linear system, with a trivial solution of $v=0$ and **infinitely many non-trivial solutions**. Therefore:
+
++ There will be infinitely many vectors $v\neq0$ for the homogeneous system $Xv=0$
++ For the minimizer $\hat{\beta}+c\cdot{}v$ in part b, vector $v$ has infinitely many non-trivial solutions, which also means that there will be infinitely many regression coefficient estimates that are minimizers to the least squares problems, regardless of the value of $c$
+
+If there are infinitely many regression estimates that is not unique, we can expect that some of them to have have their sign flipped since we can change the value of $c$
+
+For example, solutions $\hat{\beta_i}$, $\hat{\beta_i}-6v$, and $\hat{\beta_i}+6v$ are all valid solutions under part b, yet their signs (and values) and changing
+
+This is not useful in regression. The coefficient's value and sign are often used for insight generation:
+
++ We often want to know the direction of contribution each variables has (positive/negative sign)
++ We often want to know the magnitude of the contribution each variables has (the total value)
+
+If these are not unique, then the model is not usable in most use cases
+
+\newpage
+
+### Part E
+Let:
+
++ $argmin||y-X\beta||^2+\lambda||\beta||^2=(y-X\beta)^T(y-X\beta)+\lambda\beta^T\beta$

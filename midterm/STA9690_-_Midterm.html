@@ -128,8 +128,36 @@ $(document).ready(function () {
 <div id="part-a" class="section level3">
 <h3>Part A</h3>
 <blockquote>
-<p><em>Prove that E[y] = Xβ ∗ and Cov[y] = σ 2 I</em></p>
+<p>Prove that <span class="math inline">\(E[y]=X\beta{}^*\)</span> and <span class="math inline">\(Cov[y]=\sigma^2I\)</span></p>
 </blockquote>
+<p><strong>We know the following:</strong></p>
+<ul>
+<li><span class="math inline">\(E[\epsilon{}]=0\)</span></li>
+<li><span class="math inline">\(Cov[\epsilon{}]=\sigma^2I\)</span></li>
+</ul>
+<p>Using the distributive property of the <strong>expectation operator</strong> we define the following: <span class="math display">\[y=X\beta^*+\epsilon\]</span> <span class="math display">\[E[y]=E[X\beta^*]+E[\epsilon]\]</span> <span class="math display">\[E[y]=E[X\beta^*]+0\]</span> <span class="math display">\[E[y]=E[X\beta^*]\]</span></p>
+<p><span class="math inline">\(X\)</span> is a fixed quantity, while <span class="math inline">\(\beta^*\)</span> is a known quantity <strong>that does not vary</strong> (though we don’t know what the value is, we know it is a population parameter). If so, they are both constant values (constant matrix, constant vector, respectively), and by the expectation property of <span class="math inline">\(E[a]=a\)</span> we have the following:</p>
+<p><span class="math display">\[E[y]=X\beta^*\]</span></p>
+<p>Similarly, to find <span class="math inline">\(Cov[y]\)</span> we note that the covariance of a single random variable is the same as the variance of that random variable by the property of covariance: <span class="math display">\[Cov[Y]=\sigma^{2}_{Y}\]</span> Since we are only looking at a single random variable <span class="math inline">\(y\)</span>, the <strong>covariance operator</strong> is equivalent to the <strong>variance operator</strong>. Therefore, all of the variance operator is applicable:</p>
+<p><span class="math display">\[Cov[Y]=Cov[X\beta^*+\epsilon]\]</span> Since both <span class="math inline">\(X\)</span> and <span class="math inline">\(\beta^*\)</span> are constants, they are dropped by the variance operator:</p>
+<p><span class="math display">\[Cov[Y]=Cov[\epsilon]\]</span> And by the known definition of <span class="math inline">\(Cov[\epsilon{}]=\sigma^2I\)</span> <span class="math display">\[Cov[Y]=\sigma^2I\]</span></p>
+
+</div>
+<div id="part-b" class="section level3">
+<h3>Part B</h3>
+<p><strong>We know the following:</strong></p>
+<ul>
+<li><span class="math inline">\(v\in\mathbb{R}^p\)</span> is a vector such that <span class="math inline">\(Xv=0\)</span></li>
+<li><span class="math inline">\(X\in\mathbb{R}^{n\times p}\)</span> is a <span class="math inline">\(n\times p\)</span> real matrix of predictor variables</li>
+</ul>
+<p>Let the minimizer of <span class="math inline">\(\hat{\beta}+c\cdot{}v\)</span> be a solution to the least squares problem. Then:</p>
+<p><span class="math display">\[y-X\beta=y-X(\hat{\beta}+c\cdot{}v)=y-X\hat{\beta}-Xc\cdot{}v=y-X\hat{\beta}-c\cdot{}Xv\]</span> Since we know that <span class="math inline">\(Xv=0\)</span> then we know that: <span class="math display">\[y-X\hat{\beta}-c\cdot{}Xv=y-X\hat{\beta}-c\cdot{}0\]</span> So regardless of the value of <span class="math inline">\(c\)</span>, the term <span class="math inline">\(c\cdot{}0=0\)</span>. So: <span class="math display">\[y-X\hat{\beta}-c\cdot{}Xv=y-X\hat{\beta}\]</span> Hence: <span class="math display">\[(\hat{\beta}+c\cdot{}v)=argmin_{\beta}||y-X\beta||^2_2\]</span> In summary, the minimizer <span class="math inline">\(\hat{\beta}+c\cdot{}v\)</span> is equivalent to the minimizer <span class="math inline">\(\hat{beta}\)</span> if <span class="math inline">\(Xv=0\)</span> <!-- $Xv=0$ is a homogeneous system of linear equations with a guaranteed solution of $v=0$  --></p>
+<!-- If so, then $\hat{\beta}+c.v$ is also a minimizer for any $c\in\mathbb{R}$ as: -->
+<!-- $\hat{\beta}+c.v=\hat{\beta}$ if $v=0$ for **any** $c\in\mathbb{R}$, since $c\cdot{}0=0$ -->
+</div>
+<div id="part-c" class="section level3">
+<h3>Part C</h3>
+<p>If the matrix <span class="math inline">\(X\)</span> has completely linear independent columns, than the matrix is full column rank and has a unique solution for <span class="math inline">\(v\)</span>. That solution is <span class="math inline">\(v=0\)</span></p>
 </div>
 </div>
 
