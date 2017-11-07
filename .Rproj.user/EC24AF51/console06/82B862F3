@@ -1,95 +1,0 @@
-[?25l$ g[0K[?25hi[0Kt[0K[7G[?25l$ git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K[?25l
-[0K[?25hOn branch master[0K[?25l
-[0K
-Initial commit[0K
-[0K
-Untracked files:[0K
-  (use "git add <file>..." to include in what will be committed)[0K
-[0K
-        [0;31m.Rproj.user/[0m[0K
-        [0;31mSTA 9690 - Advanced Data Mining.Rproj[0m[0K
-        [0;31mhomework/[0m[0K
-        [0;31mmidterm/[0m[0K
-[0K
-nothing added to commit but untracked files present (use "git add" to track)[0K
-[0K[?25h[?25l
-[0;32mChristopher Lang@chrislangWSGC [0;35m [0;33m~/Dropbox/Education/Baruch College/Fall 2017/STA 9690 - Advanced Data Mining[0;36m (master)[0m[0K
-$[0K[3G[?25h[?25l$ g[0K[?25hi[0Kt[0K[7G[?25l$ git a[0K[?25hd[0Kd[0K[11G[?25l
-warning: LF will be replaced by CRLF in .Rproj.user/EC24AF51/sources/prop/61D181DF.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in .Rproj.user/EC24AF51/sources/prop/INDEX.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in .Rproj.user/EC24AF51/sources/s-6DBC97C9/1CB22765.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in .Rproj.user/EC24AF51/sources/s-6DBC97C9/1CB22765-contents.[0K
-The file will have its original line endings in your working directory.[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/shared/notebooks/paths.[0K[?25l
-The file will have its original line endings in your working directory.[0K
-[0K[?25hwarning: LF will be replaced by CRLF in midterm/.Rproj.user/EC24AF51/pcs/files-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in midterm/.Rproj.user/EC24AF51/pcs/source-pane.pper.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in midterm/.Rproj.user/EC24AF51/pcs/windowlayoutstate.pper.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in midterm/.Rproj.user/EC24AF51/pcs/workbench-pane.pper.[0K
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in midterm/.Rproj.user/EC24AF51/rmd-outputs.[0K
-The file will have its original line endings in your working directory.[0K
-[0K[?25hwarning: LF will be replaced by CRLF in midterm/examfiles/plotfuns.R.[0K[?25l
-The file will have its original line endings in your working directory.[0K
-warning: LF will be replaced by CRLF in midterm/examfiles/takeHome.R.[0K
-The file will have its original line endings in your working directory.[0K
-[0K[?25h[?25l
-[0;32mChristopher Lang@chrislangWSGC [0;35m [0;33m~/Dropbox/Education/Baruch College/Fall 2017/STA 9690 - Advanced Data Mining[0;36m (master)[0m[0K
-$[0K[3G[?25h[?25l$ g[0K[?25hi[0Kt[0K[7G[?25l$ git r[0K[?25he[0Km[0Ko[0Kt[0Ke[0K[14G[?25l$ git remote a[0K[?25hd[0Kd[0K[18G[?25l$ git remote add o[0K[?25hr[0Ki[0Kg[0Ki[0Kn[0K[25G[?25l$ git remote add origin https://github.com/christopherLang/STA9690_DataMining.git[0K[?25h[?25l
-[0K[?25h[?25l
-[0;32mChristopher Lang@chrislangWSGC [0;35m [0;33m~/Dropbox/Education/Baruch College/Fall 2017/STA 9690 - Advanced Data Mining[0;36m (master)[0m[0K
-$[0K[3G[?25h[?25l$ g[0K[?25hi[0Kt[0K[7G[?25l$ git l[0K[?25h[?25l$ git[0K[7G[?25h[?25l$ git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K[?25l
-[0K[?25hOn branch master[0K[?25l
-[0K
-Initial commit[0K
-[0K
-Changes to be committed:[0K
-  (use "git rm --cached <file>..." to unstage)[0K
-[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/console06/82B862F3[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/console06/INDEX001[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/sources/prop/61D181DF[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/sources/prop/INDEX[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/sources/s-6DBC97C9/1CB22765[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/sources/s-6DBC97C9/1CB22765-contents[0m[0K
-        [0;32mnew file:   .Rproj.user/EC24AF51/sources/s-6DBC97C9/lock_file[0m[0K
-        [0;32mnew file:   .Rproj.user/shared/notebooks/94D4660-STA9690 - Midterm/1/EC24AF516DBC97C9/chunks.json[0m[0K
-        [0;32mnew file:   .Rproj.user/shared/notebooks/94D4660-STA9690 - Midterm/1/s/chunks.json[0m[0K
-        [0;32mnew file:   .Rproj.user/shared/notebooks/patch-chunk-names[0m[0K
-        [0;32mnew file:   .Rproj.user/shared/notebooks/paths[0m[0K
-        [0;32mnew file:   STA 9690 - Advanced Data Mining.Rproj[0m[0K
-        [0;32mnew file:   homework/Christopher Lang - STA9690 - Homework 3.pdf[0m[0K
-        [0;32mnew file:   homework/STA9790 - Homework 2.Rmd[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/console06/86054536[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/console06/INDEX001[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/pcs/files-pane.pper[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/pcs/source-pane.pper[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/pcs/windowlayoutstate.pper[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/pcs/workbench-pane.pper[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/rmd-outputs[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/EC24AF51/saved_source_markers[0m[0K
-        [0;32mnew file:   midterm/.Rproj.user/shared/notebooks/patch-chunk-names[0m[0K
-        [0;32mnew file:   midterm/STA9690 - Midterm.Rmd[0m[0K
-        [0;32mnew file:   midterm/STA9690_-_Midterm.html[0m[0K
-        [0;32mnew file:   midterm/STA9690_-_Midterm.pdf[0m[0K
-        [0;32mnew file:   midterm/examfiles/bstar.Rdata[0m[0K
-        [0;32mnew file:   midterm/examfiles/code_data.zip[0m[0K
-        [0;32mnew file:   midterm/examfiles/plotfuns.R[0m[0K
-        [0;32mnew file:   midterm/examfiles/takeHome.R[0m[0K
-        [0;32mnew file:   midterm/mid-term-exam.pdf[0m[0K
-[0K
-Changes not staged for commit:[0K
-  (use "git add <file>..." to update what will be committed)[0K
-  (use "git checkout -- <file>..." to discard changes in working directory)[0K
-[0K
-        [0;31mmodified:   .Rproj.user/EC24AF51/console06/82B862F3[0m[0K
-[0K
-[0K[?25h[?25l
-[0;32mChristopher Lang@chrislangWSGC [0;35m [0;33m~/Dropbox/Education/Baruch College/Fall 2017/STA 9690 - Advanced Data Mining[0;36m (master)[0m[0K
-$[0K[3G[?25h[?25l$ g[0K[?25hi[0Kt[0K[7G[?25l$ git a[0K[?25hd[0Kd[0K[11G[?25l$ git add .[0K[?25h

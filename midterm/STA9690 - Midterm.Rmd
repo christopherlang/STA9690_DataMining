@@ -4,6 +4,7 @@ author: "Christopher Lang"
 date: "November 2, 2017"
 header-includes:
    - \usepackage{amsfonts}
+   - \usepackage{amsmath}
 output: pdf_document
 ---
 
@@ -57,7 +58,7 @@ So regardless of the value of $c$, the term $c\cdot{}0=0$. So:
 $$y-X\hat{\beta}-c\cdot{}Xv=y-X\hat{\beta}$$
 Hence:
 $$(\hat{\beta}+c\cdot{}v)=argmin_{\beta}||y-X\beta||^2_2$$
-In summary, the minimizer $\hat{\beta}+c\cdot{}v$ is equivalent to the minimizer $\hat{beta}$ if $Xv=0$
+In summary, the minimizer $\hat{\beta}+c\cdot{}v$ is equivalent to the minimizer $\hat{\beta}$ if $Xv=0$
 
 ### Part C
 If the matrix $X$ has completely linear independent columns, than the matrix is full column rank and has a unique solution for $v$. That solution is $v=0$
@@ -70,7 +71,7 @@ If $p>n$ then the matrix $Xv=0$ is an underdetermined homogeneous linear system,
 
 If there are infinitely many regression estimates that is not unique, we can expect that some of them to have have their sign flipped since we can change the value of $c$
 
-For example, solutions $\hat{\beta_i}$, $\hat{\beta_i}-6v$, and $\hat{\beta_i}+6v$ are all valid solutions under part b, yet their signs (and values) and changing
+For example, solutions $\hat{\beta_i}$, $\hat{\beta_i}-6v$, and $\hat{\beta_i}+6v$ are all valid solutions under part b, yet their signs (and values) are changing
 
 This is not useful in regression. The coefficient's value and sign are often used for insight generation:
 
@@ -82,6 +83,96 @@ If these are not unique, then the model is not usable in most use cases
 \newpage
 
 ### Part E
-Let:
 
-+ $argmin||y-X\beta||^2+\lambda||\beta||^2=(y-X\beta)^T(y-X\beta)+\lambda\beta^T\beta$
+In ridge regression, the objective function of a standard linear regression has an extra term during minimization:
+
+$$argmin||y-X\beta||^2+\lambda||\beta||^2$$
+Given that we know the following:
+
++ The response $\widetilde{y}=\begin{bmatrix} y \\ 0\\ \end{bmatrix}\in\mathbb{R}^{n\times{}p}$
++ The predictor vector $\widetilde{X}=\begin{bmatrix} X \\ \sqrt{\lambda}I\\ \end{bmatrix}\in\mathbb{R}\in\mathbb{R}^{(n+p)\times{}p}$
++ The zero vector $0\in\mathbb{R}^p$
++ The identity matrix $I\in\mathbb{R}^{p\times{}p}$
+
+Then we get the following least squares objective function:
+
+$$||\widetilde{y}-\widetilde{X}\beta||^2=||y_1-X_1\beta||^2 + ||y_2-X_2\beta||^2$$
+$$||y-X\beta||^2 + ||0-\sqrt{\lambda}I\beta||^2$$
+$$||y-X\beta||^2 + \lambda(I\beta)^2$$
+$$||y-X\beta||^2 + \lambda||\beta||^2$$
+The result $||y-X\beta||^2 + \lambda||\beta||^2$ is equal to the original minimizer $argmin||y-X\beta||^2+\lambda||\beta||^2$ 
+
+Since this objective function minimizes the least squares, the $\widetilde{\beta}^{ridge}$ minimizers will be the vector of linear regression coefficients
+
+### Part F
+
+For matrix $\widetilde{X}$ to be full column rank, all of its columns **must** be linearly independent from another, in all possible combinations
+
+In $\widetilde{X}_1$ the value of $\sqrt{\lambda}I$ is guaranteed to be a full column rank because:
+
++ By definition, the identity matrix $I$ will have full column rank
++ Multiplying an identity matrix with a scalar does not change this property
+
+Hence the matrix $\widetilde{X}$ is also guaranteed to be of full column rank due to $\sqrt{\lambda}I$, regardless of matrix $X$
+
+If $\widetilde{X}$ is full column rank it will have a unique solution. Therefore, $\widetilde{\beta}^{ridge}$ will find unique coefficients
+
+### Part G
+Let:
+$$||\widetilde{y}-\widetilde{X}\beta||^2=||y_1-X_1\beta||^2+\lambda||\beta||^2=(y_1-X_1\beta)^T(y_1-X_1\beta)+\lambda\beta^T\beta$$
+$$(y_1^T-(X_1\beta)^T)(y_1-X_1\beta)+\lambda\beta^T\beta$$
+$$y_1^Ty_1-y_1^TX_1\beta-(X_1\beta)^Ty+(X_1\beta)^TX_1\beta+\lambda\beta^T\beta$$
+$$y_1^Ty_1-y_1^TX_1\beta-\beta^{T}X_1^Ty_1+\beta^{T}X_1^TX_1\beta+\lambda\beta^T\beta$$
+$$y_1^Ty_1-2\beta^{T}X_1^Ty_1+\beta^{T}X_1^TX_1\beta+\lambda\beta^T\beta$$
+\newpage
+
+Now let $e=y_1^Ty_1-2\beta^{T}X_1^Ty_1+\beta^{T}X_1^TX_1\beta+\lambda\beta^T\beta$
+
+To find minimum, we find the partial derivative with respective to $\beta$ and set it equal to zero. Then rearrange so that $\beta$ is by itself on one side:
+$$\frac{\partial{}e}{\partial\beta}=\frac{\partial{}e}{\partial\beta}(y_1^Ty_1-2\beta^{T}X_1^Ty_1+\beta^{T}X_1^TX_1\beta+\lambda\beta^T\beta)=0$$
+$$\frac{\partial{}e}{\partial\beta}=(0-2X_1^Ty_1+2X_1^TX_1\beta+2\lambda\beta)=0$$
+$$-X_1^Ty_1+X_1^TX_1\beta+\lambda\beta=0$$
+$$X_1^TX_1\beta+\lambda\beta=X_1^Ty_1$$
+$$\beta(X_1^TX_1+\lambda{}I)=X_1^Ty_1$$
+$$\beta=(X_1^TX_1+\lambda{}I)^{-1}X_1^Ty_1$$
+
+We restate that $X_1=X$, $y_1=y$, and $\beta=\widetilde{\beta}^{ridge}$ to get the final answer:
+$$\widetilde{\beta}^{ridge}=(X^TX+\lambda{}I)^{-1}X^Ty$$
+
+### Part H
+Let $X=UDV^{T}$
+
+Substitute it into our original formula:
+$$\widetilde{\beta}^{ridge}=((UDV^{T})^T(UDV^{T})+\lambda{}I)^{-1}(UDV^{T})^Ty$$
+Due to the tranpose property $(AB)^T=B^TA^T$:
+$$\widetilde{\beta}^{ridge}=(VD^TU^TUDV^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
+Since we know that matrix $U$ is an orthonormal matrix, we know that $U^TU=I$, where $I$ is the identity matrix:
+$$\widetilde{\beta}^{ridge}=(VD^TIDV^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
+Which we can drop in this context:
+$$\widetilde{\beta}^{ridge}=(VD^TDV^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
+Since we know matrix $D$ is a diagonal matrix, $D=D^T$, hence:
+$$\widetilde{\beta}^{ridge}=(VD^2V^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
+Since $V$ is an orthonormal matrix, $V=V^T=V^{-1}$, hence:
+$$\widetilde{\beta}^{ridge}=((VD^2)V^{-1}+\lambda{}I)^{-1}(VD^TU^T)y$$
+$$\widetilde{\beta}^{ridge}=(V^{-1}(VD^2)+\lambda{}I)^{-1}(VD^TU^T)y$$
+$$\widetilde{\beta}^{ridge}=(V^{T}VD^2+\lambda{}I)^{-1}(VD^TU^T)y$$
+Again, since $V$ is orthonormal, $V^TV=I$ and hence:
+$$\widetilde{\beta}^{ridge}=(D^2I+\lambda{}I)^{-1}(VD^TU^T)y$$
+$$\widetilde{\beta}^{ridge}=(D^2+\lambda{}I)^{-1}(VD^TU^T)y$$
+\newpage
+
+### Part I
+
+We can determine bias if the expected value of $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is the same as $\widetilde{x}^T\beta^*$, or:
+
+If $\widetilde{x}^T\widetilde{\beta}^{ridge}=\widetilde{x}^T\beta^*$, then the estimator $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is not biased. If not equal, then it is biased
+
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=E[\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)y]$$
+Since $X$ is fixed, then the matrices $D$, $V$, and $U$ are also fixed. Similarly, matrix $I$ and scalar $\lambda$ are also fixed (conditional on specified $\lambda$). Therefore, following the properties of the **expectation operator**:
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)E[y]$$
+Where $E[y]=X\beta^*$ as defined in regression, as well as $X=UDV^T$:
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)X\beta^*$$
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)UDV^T\beta^*$$
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^2)V^T\beta^*$$
+$$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}D^2\beta^*$$
+Compare this to $E[\widetilde{x}^T\beta^{*}]=\widetilde{x}^T\beta^{*}$, the $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is a **biased estimator**
