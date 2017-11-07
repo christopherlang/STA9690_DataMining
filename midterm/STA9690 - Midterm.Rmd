@@ -31,7 +31,7 @@ $$E[y]=X\beta^*$$
 
 Similarly, to find $Cov[y]$ we note that the covariance of a single random variable is the same as the variance of that random variable by the property of covariance:
 $$Cov[Y]=\sigma^{2}_{Y}$$
-Since we are only looking at a single random variable $y$, the **covariance operator** is equivalent to the **variance operator**. Therefore, all of the variance operator is applicable:
+Since we are only looking at a single random variable $y$, the **covariance operator** is equivalent to the **variance operator**. Therefore, all of the properties of the variance operator is applicable:
 
 $$Cov[Y]=Cov[X\beta^*+\epsilon]$$
 Since both $X$ and $\beta^*$ are constants, they are dropped by the variance operator:
@@ -78,7 +78,7 @@ This is not useful in regression. The coefficient's value and sign are often use
 + We often want to know the direction of contribution each variables has (positive/negative sign)
 + We often want to know the magnitude of the contribution each variables has (the total value)
 
-If these are not unique, then the model is not usable in most use cases
+If these are not unique, then the model is not usable for most use cases
 
 \newpage
 
@@ -163,9 +163,9 @@ $$\widetilde{\beta}^{ridge}=(D^2+\lambda{}I)^{-1}(VD^TU^T)y$$
 
 ### Part I
 
-We can determine bias if the expected value of $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is the same as $\widetilde{x}^T\beta^*$, or:
+We can determine whether or not the $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is a biased estimator by determining whether or not its expected value is equal to $\widetilde{x}^T\beta^*$. In other words:
 
-If $\widetilde{x}^T\widetilde{\beta}^{ridge}=\widetilde{x}^T\beta^*$, then the estimator $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is not biased. If not equal, then it is biased
+If $\widetilde{x}^T\widetilde{\beta}^{ridge}\neq\widetilde{x}^T\beta^*$, then the estimator $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is biased, not biased otherwise
 
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=E[\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)y]$$
 Since $X$ is fixed, then the matrices $D$, $V$, and $U$ are also fixed. Similarly, matrix $I$ and scalar $\lambda$ are also fixed (conditional on specified $\lambda$). Therefore, following the properties of the **expectation operator**:
