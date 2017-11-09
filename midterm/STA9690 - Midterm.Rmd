@@ -176,3 +176,131 @@ $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^2)V^T\beta^*$$
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}D^2\beta^*$$
 Compare this to $E[\widetilde{x}^T\beta^{*}]=\widetilde{x}^T\beta^{*}$, the $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is a **biased estimator**
+
+\newpage
+
+## Question 2
+
+### Part A
+We can reformulate the least squares problem into an algebraic form:
+
+$$argmin_{\beta}||y-X\beta||^2_2+\lambda||\beta||^2_2=argmin_{\beta}\sum^n_{i=1}(y_i-\beta_i)^2+\lambda\sum^n_{i=1}\beta^2_i$$
+To find the solution that minimizes the algebraic form, we take the partial derivative of the objective function and set it zero:
+$$\frac{\partial}{\partial\beta}\sum^n_{i=1}(y_i-\beta_i)^2+\lambda\sum^n_{i=1}\beta^2_i=0$$
+$$\sum^n_{i=1}2(y_i-\beta_i)(0-1)+\lambda\sum^n_{i=1}2\beta_i=0$$
+$$\sum^n_{i=1}2(\beta_i-y_i)+\lambda\sum^n_{i=1}2\beta_i=0$$
+$$\sum^n_{i=1}\beta_i-\sum^n_{i=1}y_i+\lambda\sum^n_{i=1}\beta_i=0$$
+$$\sum^n_{i=1}\beta_i+\lambda\sum^n_{i=1}\beta_i=\sum^n_{i=1}y_i$$
+$$\sum^n_{i=1}\beta_i(1+\lambda)=\sum^n_{i=1}y_i$$
+$$\sum^n_{i=1}\beta_i=\sum^n_{i=1}\frac{y_i}{(1+\lambda)}$$
+Now let $\beta=\widetilde{\beta}^{ridge}$, so that:
+$$\sum^n_{i=1}\widetilde{\beta}^{ridge}_i=\sum^n_{i=1}\frac{y_i}{(1+\lambda)}$$
+
+Therefore, for any given $i=1,\ 2,\ ...,\ n$:
+
+$$\widetilde{\beta}^{ridge}_i=\frac{y_i}{(1+\lambda)}$$
+\newpage
+
+### Part B
+
+Let:
+
++ $\widetilde{\beta}^{ridge}_i=\frac{y_i}{(1+\lambda)}$
++ $\widetilde{\beta}^{lasso}_i=sign(y_i)\cdot{}max(|y_i|-\frac{\lambda}{2}, 0)$
+
+```{r message=FALSE, fig.height = 3}
+library(tidyverse)
+
+beta_ridge <- function(y, lambda=1) {
+  y / (1 + lambda)
+}
+
+beta_lasso <- function(y, lambda=1) {
+  sign(y) * pmax(abs(y) - (lambda / 2), 0)
+}
+
+y_values <- seq(-10, 10, by = 0.01)
+
+df <- (
+    data_frame(y = y_values, b_ridge = beta_ridge(y_values),
+               b_lasso = beta_lasso(y_values)) %>%
+      gather(regression_type, beta, b_ridge, b_lasso)
+)
+
+ggplot(df) + aes(y, beta, color = regression_type) + geom_line() + theme_bw() +
+  labs(x = expression(""*y[i]*""), y = expression(""*beta[i]*"")) +
+  scale_color_discrete(guide = guide_legend("Regression Type"),
+                       label = c('b_lasso' = 'LASSO', 'b_ridge' = 'Ridge'))
+```
+Observation into the difference between LASSO and Ridge is:
+
++ The LASSO coefficients shows a steeper slope in regards to the coefficients vs. Ridge. Hence LASSO allows for a greater coefficient size compared to Ridge. This is due to Ridge's greater penalty imposed on the objective function, limiting the size of the coefficients
++ LASSO also shows a range of $y_i$ values where the coefficient becomes zero (between $-\frac{1}{2}$ and $\frac{1}{2}$). This is LASSO's stronger shrinkage capabilities, forcing more coefficients to be zero vs. Ridge
+
+\newpage
+
+### Part C
+We first start with the general least square minimization problem:
+
+$$\widetilde{\beta}=argmin_{\beta}||y-X\beta||^2_2$$
+Knowing that predictor matrix $X\in\mathbb{R}$ is an orthogonal matrix:
+
+$$||y-X\beta||^2_2=y^Ty-2y^TX\beta+\beta^TX^TX\beta=y^Ty-2y^TX\beta+\beta^TI\beta$$
+$$y^Ty-2y^TX\beta+\beta^T\beta=Xy^TX^Ty-2y^TX^{-1}X\beta+\beta^T\beta$$
+\newpage
+
+## Question 3
+
+### Part A
+The answers to this question has been placed in the script `takeHome_christopherlang.R` script included in the submittal
+
+Under each `#TODO` comment, there is a `||-ANSWER-||` tag that contains the filled in code
+
+### Part B
+The plots are located in the `takeHome_christopherlang.R` script, under *||--ANSWER--|| for part B* section
+
+In regards to the selected $\lambda$, answers are below
+
++ For the ridge regression:
+    * The *usual rule* selected $\lambda=4$
+    * The *one standard error rule* selected $\lambda=15$
++ For the lasso regression:
+    * The *usual rule* selected $\lambda=0.057$
+    * The *one standard error rule* selected $\lambda=0.120$
+
+We can get both the *usual rule* and *one standard error rule* mean cross validation errors, for both methods. The code used to get these values remain under the same section
+
+For ridge regression, we find that:
+
++ The mean CV error for *usual rule* is $271.1551$
++ The mean CV error for *one standard error rule* is $282.0665$
+
+For lasso regression, we find that:
+
++ The mean CV error for *usual rule* is $247.844$
++ The mean CV error for *one standard error rule* is $255.2767$
+
+Between the two methods, lasso regression had lower CV error overall, according to both rules
+
+### Part C
+The code used is located in the `takeHome_christopherlang.R` script, under *||--ANSWER--|| for part C* section
+
+When looking at just the lasso images, the main difference between the usual rule and standard error rule is that the usual rule is slightly more noisy than standard error, but more saturated in coloration (specifically the darker areas). Which image is found to look better is a bit subjective, but we found that the usual rule image is better. Though it is more noisy (though only slighty), it seems closer to the original `bstar` image due to the closer coloration it has
+
+Between the ridge and lasso images, the difference is much more stark however. The ridge images is simply far too noisy, which causes it to lose details in the shape, as well as reducing the color's saturation compared to the lasso iamges
+
+Ultimately, the lasso images are much closer to the original `bstar` image than ridge, primarily due to the closer color match it has to the original. As stated before, of the four images, the lasso usual rule image is found to be the closests to the original `bstar` image
+
+\newpage
+
+### Part D
+The code is located in the `takeHome_christopherlang.R` script, under *||--ANSWER--|| for part D* section
+
+We compute the total sum of squared error for both ridge and lasso, and for both usual and standard error rule, against the original `bstar` coefficients:
+
++ Ridge regression, usual rule $SSE=226.3899$
++ Ridge regression, standard error rule $SSE=245.3781$
++ Lasso regression, usual rule $SSE=148.6028$
++ Lasso regression, standard error rule $SSE=159.603$
+
+Of the four, the lasso regression with usual rule $\lambda$ selection is found to the have the lowest total sum of squared error, and therefore has the closest prediction of the original `bstar` coefficients
