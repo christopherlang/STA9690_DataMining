@@ -144,7 +144,7 @@ Let $X=UDV^{T}$
 
 Substitute it into our original formula:
 $$\widetilde{\beta}^{ridge}=((UDV^{T})^T(UDV^{T})+\lambda{}I)^{-1}(UDV^{T})^Ty$$
-Due to the tranpose property $(AB)^T=B^TA^T$:
+Due to the transpose property $(AB)^T=B^TA^T$:
 $$\widetilde{\beta}^{ridge}=(VD^TU^TUDV^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
 Since we know that matrix $U$ is an orthonormal matrix, we know that $U^TU=I$, where $I$ is the identity matrix:
 $$\widetilde{\beta}^{ridge}=(VD^TIDV^{T}+\lambda{}I)^{-1}(VD^TU^T)y$$
@@ -174,8 +174,13 @@ Where $E[y]=X\beta^*$ as defined in regression, as well as $X=UDV^T$:
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)X\beta^*$$
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^TU^T)UDV^T\beta^*$$
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}(VD^2)V^T\beta^*$$
+
 $$E[\widetilde{x}^T\widetilde{\beta}^{ridge}]=\widetilde{x}^T(D^2+\lambda{}I)^{-1}D^2\beta^*$$
-Compare this to $E[\widetilde{x}^T\beta^{*}]=\widetilde{x}^T\beta^{*}$, the $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is a **biased estimator**
+
+We find that $E[\widetilde{x}^T\widetilde{\beta}^{ridge}]\neq{}E[\widetilde{x}^T\beta^{*}]$ as:
+$$\widetilde{x}^T(D^2+\lambda{}I)^{-1}D^2\beta^*\neq{}\widetilde{x}^T\beta^{*}$$
+
+Therefore, we conclude that $\widetilde{x}^T\widetilde{\beta}^{ridge}$ is a **biased estimator**
 
 \newpage
 
@@ -243,10 +248,66 @@ Observation into the difference between LASSO and Ridge is:
 We first start with the general least square minimization problem:
 
 $$\widetilde{\beta}=argmin_{\beta}||y-X\beta||^2_2$$
-Knowing that predictor matrix $X\in\mathbb{R}$ is an orthogonal matrix:
+We know that the predictor matrix $X$ is orthogonal, hence it will have the following properties:
 
-$$||y-X\beta||^2_2=y^Ty-2y^TX\beta+\beta^TX^TX\beta=y^Ty-2y^TX\beta+\beta^TI\beta$$
-$$y^Ty-2y^TX\beta+\beta^T\beta=Xy^TX^Ty-2y^TX^{-1}X\beta+\beta^T\beta$$
++ $X^TX=XX^T=I$
++ $X^T=X^{-1}$
++ That $X^T(X^T)^T=X^TX=XX^T=(X^T)^TX^T$, hence $X^T$ is also orthogonal
++ $||Xv||_2=||v||_2$, therefore $||Xv||^2_2=||v||^2_2$, where $v\in\mathbb{R}^n$
++ $||y||^2_2=||Xy||^2_2=||X^Ty||^2_2$, where $y\in\mathbb{R}^n$
+
+Assuming predictor matrix $X$ is orthogonal, we find that:
+$$||y-X\beta||^2_2=||y||^2_2-2y^TX\beta+||X\beta||^2_2=||X^Ty||^2_2-2(XX^T)y^TX\beta+||\beta||^2_2=||X^Ty||^2_2-2Xy^T\beta+||\beta||^2_2$$
+
+Therefore:
+$$||y-X\beta||^2_2=||X^Ty-\beta||^2_2$$
+
+Hence, we have the following least squares:
+
++ $\widetilde{\beta}^{ridge}=argmin_{\beta}||X^Ty-\beta||^2_2+\lambda||\beta||^2_2$
++ $\widetilde{\beta}^{lasso}=argmin_{\beta}||X^Ty-\beta||^2_2+\lambda||\beta||_1$
+
+So we find that if predictor matrix $X$ is orthogonal, the least square problems (and their solutions) will have the same formula as if $X$ was not orthogonal, with $y$ replaced by $X^Ty$
+
+### Part D
+Assume that predictor matrix $X\in\mathbb{R}^{n\times{}p}$ is orthogonal, and $y\in\mathbb{R}^n$:
+
+We know that the solution to the ordinary least square problem is:
+
+$$\widetilde{\beta}^{OLS}=(X^TX)^{-1}X^Ty$$
+$$\widetilde{\beta}^{OLS}=(I)^{-1}X^Ty=X^Ty$$
+$$\widetilde{\beta}^{OLS}=X^Ty$$
+
+From part G in question 1:
+$$\widetilde{\beta}^{ridge}=(X^TX+\lambda{}I)^{-1}X^Ty$$
+$$\widetilde{\beta}^{ridge}=(I+\lambda{}I)^{-1}X^Ty$$
+$$\widetilde{\beta}^{ridge}=\frac{X^Ty}{1+\lambda}=\frac{\widetilde{\beta}^{OLS}}{1+\lambda}$$
+
+$$\widetilde{\beta}^{ridge}=\frac{\widetilde{\beta}^{OLS}}{1+\lambda}$$
+\newpage
+
+Let $\lambda\in\mathbb{R}\geq{}0$
+
+For ridge regression:
+
++ If $lambda=0$, the solution to ridge regression is equivalent to ordinary least squares
++ If $lambda>0$, the ridge regression coefficients will become smaller than ordinary least squares coefficient as $\lambda$ increases in value
+
+Hence the $\lambda$ parameter controls the ridge regression's coefficient penalization's strength. The greater the value, the greater the penalty
+
+For lasso regression:
+
+We take the answer from part B, where the solution to the lasso regression is
+$$\widetilde{\beta}^{lasso}=sign(y_i)\cdot{}max(|y_i|-\frac{\lambda}{2}, 0)$$
+And replace $y_i$ with $\widetilde{\beta}^{OLS}$:
+
+$$\widetilde{\beta}^{lasso}=sign(\widetilde{\beta}^{OLS})\cdot{}max(|\widetilde{\beta}^{OLS}|-\frac{\lambda}{2}, 0)$$
+
++ If $\widetilde{\beta}^{lasso}<0$, then the lasso coefficient is always negative if $|\widetilde{\beta}^{OLS}| < \frac{lambda}{2}$, zero otherwise. Hence there is a range of $\widetilde{\beta}^{OLS}$ values where the lasso coefficient is forced to zero
++ If $\widetilde{\beta}^{lasso}=0$, then the solution to the lasso regression is always zero
++ If $\widetilde{\beta}^{lasso}>0$, then the lasso coefficient is always positive if $|\widetilde{\beta}^{OLS}| > \frac{lambda}{2}$, zero otherwise. Similar to when $\widetilde{\beta}^{lasso}<0$, there is a certain range of OLS coefficient values where lasso will be force to zero
+
+The $\lambda$ parameter in lasso controls the coefficient penalization by extending or contracting the range where lasso coefficients are forced to zero
 \newpage
 
 ## Question 3
@@ -285,11 +346,11 @@ Between the two methods, lasso regression had lower CV error overall, according 
 ### Part C
 The code used is located in the `takeHome_christopherlang.R` script, under *||--ANSWER--|| for part C* section
 
-When looking at just the lasso images, the main difference between the usual rule and standard error rule is that the usual rule is slightly more noisy than standard error, but more saturated in coloration (specifically the darker areas). Which image is found to look better is a bit subjective, but we found that the usual rule image is better. Though it is more noisy (though only slighty), it seems closer to the original `bstar` image due to the closer coloration it has
+When looking at just the lasso images, the main difference between the usual rule and standard error rule is that the usual rule is slightly more noisy than standard error, but more saturated in coloration (specifically the darker areas). Which image is found to look better is a bit subjective, but we found that the usual rule image is better. Though it is more noisy (though only slightly), it seems closer to the original `bstar` image due to the closer coloration it has
 
-Between the ridge and lasso images, the difference is much more stark however. The ridge images is simply far too noisy, which causes it to lose details in the shape, as well as reducing the color's saturation compared to the lasso iamges
+Between the ridge and lasso images, the difference is much more stark however. The ridge images is simply far too noisy, which causes it to lose details in the shape, as well as reducing the color's saturation compared to the lasso images
 
-Ultimately, the lasso images are much closer to the original `bstar` image than ridge, primarily due to the closer color match it has to the original. As stated before, of the four images, the lasso usual rule image is found to be the closests to the original `bstar` image
+Ultimately, the lasso images are much closer to the original `bstar` image than ridge, primarily due to the closer color match it has to the original. As stated before, of the four images, the lasso usual rule image is found to be the closest to the original `bstar` image
 
 \newpage
 
