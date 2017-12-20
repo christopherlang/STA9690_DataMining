@@ -1,108 +1,116 @@
+# R Script used for training and tuning Random Forest =========================
+# Christopher Lnag
+# STA9690 - Advanced Data Mining, Fall 2017
+# Final Project
 library(tidyverse)
 library(randomForest)
 library(iterators)
 library(foreach)
 library(snow)
 library(doSNOW)
+library(caret)
 
 ntrials <- 100
-p <- 57
 
-source("project/lib/utils.R", T)
+spam <- (
+  read_csv("project/data/processed/spam_data_cleaned.csv") %>%
+    mutate(spam = factor(spam, c('spam', 'non-spam'))) %>%
+    select(-word_freq_3d, -word_freq_table, -word_freq_parts) %>%  # All zeros
+    mutate_at(vars(-spam), funs(scale(.)))  # scale all features to z-score
+)
 
-spam <- read_csv("project/data/processed/spam_data_cleaned.csv")
-spam$spam <- factor(spam$spam, c('spam', 'non-spam'))
+dd_n <- nrow(spam)  # this is n, # of records/observations/units/etc.
+dd_p <- ncol(spam) - 1  # this is p, # of features, -1 for response column
 
-set.seed(123)
-seeds_for_runs <- sample.int(10000, size = ntrials)
+set.seed(12345)
 
-params <- list(mtry = c(5:10), ntree = 500, replace = c(T, F), multi = c(2, 10),
-               kfold = c('kLOOCV', "k10"))
+# Generate a parameter space for training and testing
+# For combination of:
+# Training size (2p, 10p, n/2)
+# mtry (1 through sqrt(p) + 2)
+# ntree 10, 50, 100, 500, 1000
+# replace TRUE or FALSE
+# Trial 1 through 100
+rf_params <- (
+  list(
+    training_size = c(2 * dd_p, 10 * dd_p, floor(dd_n / 2)),
+    trial_i = 1:ntrials,
+    rf_mtry = 1:(ceiling(sqrt(dd_p)) + 2),
+    rf_ntree = c(10, 50, 100, 500, 1000),
+    rf_replace = c(TRUE, FALSE)
+  ) %>%
+    expand.grid() %>%
+    as.tbl() %>%
+    mutate(trial_seed = sample(100000, n(), replace = F))
+)
 
-grid_params <- expand_cv_search(params, n = ntrials)
-nruns <- nrow(grid_params)
-grid_params <- iter(grid_params, by = 'row')
-
+# Create parallel backend ====
 cl <- makeCluster(7)
 registerDoSNOW(cl)
 
-pb <- txtProgressBar(max = nruns, style = 3)
+# Progress bar ====
+pb <- txtProgressBar(max = nrow(rf_params), style = 3, width = 80)
 progress <- function(n) setTxtProgressBar(pb, n)
-opts <- list(progress = progress)
+opts <- list(progress = progress, preschedule = FALSE)
 
-r <- foreach(
-  mp = grid_params, .options.snow = opts,
-  .packages = c('tidyverse', 'randomForest'),
-  .export = c('spam', 'kfold_split', 'train_valid_split')) %dopar% {
+# Modeling code ==============================================================
+rf_results <- foreach(
+  pp = iter(rf_params, by = 'row'),
+  .export = c('spam', 'dd_n', 'dd_p', 'ntrials'),
+  .packages = c('caret', 'tidyverse', 'randomForest'),
+  .options.snow = opts) %dopar% {
+    # Extract work parameters
+    trial_i <- pp[['trial_i']]
+    rf_ntree <- pp[['rf_ntree']]
+    rf_replace <- pp[['rf_replace']]
+    rf_mtry <- pp[['rf_mtry']]
+    trial_seed <- pp[['trial_seed']]
 
-  trial_seed <- mp$seed
-  splits <- train_valid_split(nrow(spam), spam$spam,
-                              train_prop = (mp$multi * p) / nrow(spam),
-                              seed = trial_seed)
+    set.seed(trial_seed)
 
-  learn_indices <- splits$training_indices
-  vl_indices <- splits$validation_indices
+    randomized_indices <- sample(seq_len(dd_n))
+    training_indices <- randomized_indices[1:pp$training_size]
+    testing_indices <- randomized_indices[(pp$training_size + 1):dd_n]
 
-  if (mp$kfold == 'kLOOCV') {
-    kfold <- length(learn_indices)
-  } else {
-    kfold <- as.integer(gsub('k', '', mp$kfold))
-  }
+    training_set <- spam[training_indices,]
+    testing_set <- spam[testing_indices,]
+    testing_outcome <- testing_set$spam
 
-  learn_dataset <- spam[learn_indices,]
-  fold_splits <- kfold_split(nrow(learn_dataset), learn_dataset$spam, kfold,
-                             seed = trial_seed)
+    rf_model <- randomForest::randomForest(spam ~ ., data = training_set,
+                                           ntree = rf_ntree,
+                                           replace = rf_replace,
+                                           mtry = rf_mtry)
 
-  fold_indices <- fold_splits$fold_indices
-  fold_selection <- fold_splits$traintest_folds
+    predicted_outcome <- predict(rf_model, testing_set)
 
-  rf_cv_results <- lapply(names(fold_selection), function(fold_name) {
-    training_indices <- fold_selection[[fold_name]]
-    training_indices <- lapply(training_indices, function(x) fold_indices[[x]])
-    training_indices <- unlist(training_indices)
-    training_dataset <- learn_dataset[training_indices,]
-
-    testing_indices <- fold_indices[[fold_name]]
-    testing_dataset <- spam[testing_indices,]
-
-    model <- randomForest(spam ~ ., data = training_dataset, ntree = mp$ntree,
-                          replace = mp$replace, mtry = mp$mtry)
-
-    model_stats <- data_frame(
-      fold = fold_name,
-      mtry = mp$mtry,
-      replace = mp$replace,
-      ntree = mp$ntree
+    varimpdf <- randomForest::importance(rf_model)
+    varimpdf <- (
+      dplyr::as_data_frame(varimpdf) %>%
+        dplyr::mutate(variables = rownames(varimpdf)) %>%
+        dplyr::select(variables, everything())
+    )
+    varimpdf <- dplyr::bind_cols(
+      dplyr::slice(pp, rep(1, nrow(varimpdf))), varimpdf
     )
 
-    predictions <- unname(predict(model, newdata = testing_dataset))
-    correct_freq <- table(testing_dataset$spam == predictions)
-    correct <- correct_freq['TRUE']
-    incorrect <- correct_freq['FALSE']
-    total_predict <- sum(correct_freq)
+    trial_result <- (
+      pp %>%
+        dplyr::mutate(total = nrow(testing_set)) %>%
+        dplyr::mutate(correct = sum(predicted_outcome == testing_outcome)) %>%
+        dplyr::mutate(accuracy = correct / total) %>%
+        dplyr::mutate(misclassification = 1 - accuracy) %>%
+        dplyr::mutate(trial_run = pp[['trial_i']]) %>%
+        dplyr::mutate(seed = trial_seed)
+    )
 
-    model_stats$correct <- correct
-    model_stats$incorrect <- incorrect
-    model_stats$total_predict <- total_predict
-    model_stats$multi <- mp$multi
-
-    return(model_stats)
-  })
-
-  rf_cv_results <- (
-    bind_rows(rf_cv_results) %>%
-      mutate_at(vars(correct, incorrect, total_predict),
-                funs(replace(., is.na(.), 0))) %>%
-      mutate(fold = as.integer(gsub('k', '', fold))) %>%
-      arrange(fold) %>%
-      mutate(fold = paste0('k', fold))
-  )
-  rf_cv_results$grid_id <- mp$grid_id
-
-  return(rf_cv_results)
+    return(list(trial_result = trial_result, varimpdf = varimpdf))
   }
 
-r <- bind_rows(r)
+trial_results <- bind_rows(lapply(rf_results, function(x) x$trial_result))
+varimp_result <- bind_rows(lapply(rf_results, function(x) x$varimpdf))
 
-group_by(rf_cv_results, fold, dataset_type, correct) %>%
-  summarize(n = n())
+write_csv(trial_results, "project/data/processed/rf_results.csv")
+write_csv(varimp_result, "project/data/processed/rf_varimp_results.csv")
+
+stopCluster(cl)
+rm(list = ls())

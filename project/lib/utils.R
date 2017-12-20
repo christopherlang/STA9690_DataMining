@@ -23,10 +23,10 @@ train_valid_split <- function(nobs, classes, train_prop = 0.80, seed = 12345) {
     return(list(train_i = train_indices, valid_i = valid_indices))
   })
 
-  train_indices <- c(stratified_indices[['spam']][['train_i']],
-                     stratified_indices[['non-spam']][['train_i']])
-  valid_indices <- c(stratified_indices[['spam']][['valid_i']],
-                     stratified_indices[['non-spam']][['valid_i']])
+  train_indices <- lapply(stratified_indices, function(x) x$train_i)
+  train_indices <- unname(unlist(train_indices))
+  valid_indices <- lapply(stratified_indices, function(x) x$valid_i)
+  valid_indices <- unname(unlist(valid_indices))
 
   result <- list()
   result[['training_indices']] <- train_indices
@@ -37,13 +37,10 @@ train_valid_split <- function(nobs, classes, train_prop = 0.80, seed = 12345) {
 
 
 kfold_split <- function(nobs, classes, k = 10, seed = 12345) {
-  x <- seq_len(nobs)
-
   set.seed(seed)
-  i_shuffled <- sample(x)
-  x <- x[i_shuffled]
-  classes <- classes[i_shuffled]
-  class_stratified <- split(seq_len(nobs), classes)
+
+  indices_index <- sample(seq_len(nobs))
+  indices <- seq_len(nobs)[indices_index]
 
   kfold_splitter <- function(x) {
     split_factor <- as.character(cut(seq_along(x), k, labels = FALSE))
@@ -53,12 +50,22 @@ kfold_split <- function(nobs, classes, k = 10, seed = 12345) {
 
   if (k >= nobs) {
     # Assume LOOCV
-    fold_indices <- kfold_splitter(x)
+    fold_indices <- kfold_splitter(indices)
   } else {
+    classes <- classes[indices_index]
+    class_stratified <- split(indices, classes)
     stratified_indices <- lapply(class_stratified, kfold_splitter)
 
-    fold_indices <- mapply(function(x, y) c(x, y), stratified_indices$spam,
-                           stratified_indices[['non-spam']])
+    fold_indices <- list()
+    for (a_class in stratified_indices) {
+      for (j in as.character(seq_len(k))) {
+        if (is.null(fold_indices[[j]])) {
+          fold_indices[[j]] <- a_class[[j]]
+        } else {
+          fold_indices[[j]] <- c(fold_indices[[j]], a_class[[j]])
+        }
+      }
+    }
   }
 
   names(fold_indices) <- paste0("k", names(fold_indices))
